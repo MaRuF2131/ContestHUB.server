@@ -1,6 +1,6 @@
 // utils/securityChecker.ts
 
-import { isPlainObject } from "./sanitizer";
+import { isPlainObject } from "./sanitizer.mjs";
 
 
 export async function containsDangerousContent(){
