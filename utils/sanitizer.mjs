@@ -23,8 +23,8 @@ export function sanitizeString(str, options={ maxLength } = {}) {
 /**
  * Sanitize deeply any input object/array/string
  */
-export function sanitizeObject(input, options={ maxStringLength = 2000, allowedKeysRegex = null, removeEmpty = false } = {}) {
-  const { maxStringLength = 2000, allowedKeysRegex = null, removeEmpty = false } = options;
+export function sanitizeObject(input, options={ maxStringLength = 10000, allowedKeysRegex = null, removeEmpty = false } = {}) {
+  const { maxStringLength = 10000, allowedKeysRegex = null, removeEmpty = false } = options;
 
   if (typeof input === "string") return sanitizeString(input, { maxLength: maxStringLength });
   if (typeof input === "number" || typeof input === "boolean" || input === null) return input;
