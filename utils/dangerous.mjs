@@ -3,7 +3,7 @@
 import { isPlainObject } from "./sanitizer.mjs";
 
 
-export async function containsDangerousContent(){
+export async function containsDangerousContent(input){
   const cfg = {
     checkXSS: true,
     checkJSCalls: true,
