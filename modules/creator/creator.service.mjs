@@ -1,7 +1,7 @@
-import { ObjectId, ReturnDocument } from "mongodb";
+import { ObjectId} from "mongodb";
 import mongo from "../../MongoDB.mjs";
 
-const creatorservice ={
+export const creatorservice ={
     async createContest(contest){
         try{
             const db= await mongo();
@@ -11,18 +11,19 @@ const creatorservice ={
             throw err;
         }    
     },
-    async updateContest(contest) {
+    async updateContest(id,contest) {
     try {
         const db = await mongo();
         const result = await db.collection("contests").findOneAndUpdate(
-        { _id: new ObjectId(contest._id) },
+        { _id: new ObjectId(id) },
         { $set: contest },
         {
-            returnDocument: "after", //  updated document return করবে
+            projection:{imageUrl:1},
+            returnDocument: "before", //  updated document return করবে
         }
         );
 
-        return result.value; // full updated contest data
+        return result; // full updated contest data
     } catch (err) {
         throw err;
     }
