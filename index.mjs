@@ -14,7 +14,7 @@ let db;
 
     db = await mongo()
   } catch (err) {
-    console.error('❌ MongoDB connection error:', err);
+    console.error(' MongoDB connection error:', err);
   }
 })();
 
