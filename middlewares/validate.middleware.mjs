@@ -1,7 +1,7 @@
 // src/utils/validate.middleware.ts
 
-import { containsDangerousContent } from "../utils/dangerous";
-import { runValidations } from "../utils/validation";
+import { containsDangerousContent } from "../utils/dangerous.mjs";
+import { runValidations } from "../utils/validation.mjs";
 
 export const validateRequest = (  rules={}) => {
     return async (req, res, next) => {

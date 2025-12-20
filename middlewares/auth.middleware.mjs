@@ -6,42 +6,32 @@ const verifyJWT = (req, res, next) => {
   const user_token = JSON.parse(req.headers['authorization']);
 
   if (!Coo_token || !user_token) {
-    console.log("⛔ Missing cookies or request header");
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
  const Coo_res= jwt.verify(Coo_token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-       console.log('JWT verification error:', err);
        return res.status(401).json({ message: 'Unauthorized (wrong cookies)' });
     }
-    /* req.user = decoded; */
-    /* console.log("Decoded user:", req.user); */
     return decoded;
   });
  const User_res= jwt.verify(user_token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-       console.log('JWT verification error:', err);
        return res.status(401).json({ message: 'Unauthorized (wrong request header)' });
     }
-    /* req.user = decoded; */
-    /* console.log("Decoded user:", req.user); */
     return decoded;
   });
 
       
     if (Coo_res.email !== User_res.email || Coo_res.username !== User_res.username || Coo_res.uid !== User_res.uid) {
-       console.log("⛔ User information does not match the token");
        return res.status(401).json({ message: 'Unauthorized' });
     }
     // Check if the token has expired
       if (!Coo_res.exp || !User_res.exp) {
-        console.log("⛔ Token does not have an expiration time");
         return res.status(401).json({ message: 'Unauthorized' });
       }
     const currentTime = Math.floor(Date.now() / 1000);
       if (Coo_res.exp < currentTime ) {
-           console.log("⛔ Token has expired");
             res.clearCookie('token', {
               httpOnly: true,
               secure: process.env.NODE_ENV === 'production',

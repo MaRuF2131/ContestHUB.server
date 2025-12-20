@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 import { creatorController } from "./creator.controller.mjs";
 import { validateRequest } from "../../middlewares/validate.middleware.mjs";
 
@@ -11,10 +11,9 @@ import {
 import verifyJWT from "../../middlewares/auth.middleware.mjs";
 import rolecheck from "../../utils/Rolecheck.mjs";
 
-const router = Router();
+const router = express.Router();
 //middleware to protect routes
 router.use(verifyJWT);
-router.use(express.json());
 router.use(rolecheck)
 router.use(async (req, res, next) => {
   if (req.role !== 'creator') {
@@ -23,7 +22,7 @@ router.use(async (req, res, next) => {
   next();
 });
 
-// CREATE ROOM
+// CREATE 
 router.post(
   "/create",
   validateRequest(createContestRules),
@@ -37,14 +36,14 @@ router.get(
   creatorController.list
 );
 
-// UPDATE ROOM
+// UPDATE 
 router.put(
   "/:id",
   validateRequest({ ...idParamRules, ...updateContestRules }),
   creatorController.update
 );
 
-// DELETE ROOM
+// DELETE 
 router.delete(
   "/:id",
   validateRequest(idParamRules),

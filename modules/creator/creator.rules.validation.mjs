@@ -1,4 +1,4 @@
-import { isRequired, isValidNumber, isValidString } from "../../utils/validation";
+import { isRequired, isValidNumber, isValidString } from "../../utils/validation.mjs";
 import validator from "validator";
 import { DangerousContentCheck, DateValidationCheck } from "../../utils/validation.mjs";
 
