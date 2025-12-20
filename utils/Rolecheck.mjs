@@ -9,14 +9,14 @@ const rolecheck = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized: No email found in token" });
     }
 
-    console.log("Admin check for email:", email);
-
     const result = await db.collection("user_roles").findOne({ email });
 
     if (!result) {
       return res.status(404).json({ message: "No role found for this user" });
     }
-
+    if(result?.role===req?.user?.role){
+      return res.status(401).json({message:"Unauthorized:Reload or Loging again"})
+    }
     req.role = result?.role;
     next();
   } catch (error) {

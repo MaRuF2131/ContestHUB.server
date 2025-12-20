@@ -8,8 +8,20 @@ import {
   idParamRules,
   listContestRules
 } from "./creator.rules.validation.mjs";
+import verifyJWT from "../../middlewares/auth.middleware.mjs";
+import rolecheck from "../../utils/Rolecheck.mjs";
 
 const router = Router();
+//middleware to protect routes
+router.use(verifyJWT);
+router.use(express.json());
+router.use(rolecheck)
+router.use(async (req, res, next) => {
+  if (req.role !== 'creator') {
+    return res.status(403).json({ message: 'Only creator can access this route' });
+  }
+  next();
+});
 
 // CREATE ROOM
 router.post(
