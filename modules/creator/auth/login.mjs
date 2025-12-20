@@ -30,9 +30,8 @@ router.post('/login', async (req, res) => {
       return res.status(getrole.status).json({ message: getrole.message });
     }
     console.log("User role created orrrrrrr updated successfully:", getrole);
-
   // Create JWT token
-  const payload = { username, uid, email, role: role?.user?.role};
+  const payload = { username:getrole?.user?.name, uid:getrole?.user?._id, email:getrole?.user?.email, role: getrole?.user?.role};
   /* console.log("Payload for JWT:", payload); */
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -45,7 +44,7 @@ router.post('/login', async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   });
 
-  res.json({ message: 'Login Successful', role: getrole.user.role, });
+  res.json({ message: 'Login Successful', role: getrole?.user?.role, token:token });
 });
 
 
