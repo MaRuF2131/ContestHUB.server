@@ -11,7 +11,6 @@ export async function containsDangerousContent(input){
     checkSQL: true,
     maxLength: 5000,
     customBlacklist: [],
-    ...options,
   };
 
   const reasons = [];

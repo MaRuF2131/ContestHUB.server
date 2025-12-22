@@ -33,7 +33,7 @@ export const creatorservice ={
            const skip = (parseInt(pagination?.page) - 1) * parseInt(pagination?.limit);
            const db=await mongo();
            const [data,total]=await Promise.all([
-            await db.collection("contests").find(filter).skip(skip).limit(pagination?.limit).sort({createdAt:-1}).toArray(),
+            await db.collection("contests").find(filter).skip(skip).limit(parseInt(pagination?.limit)).sort({createdAt:-1}).toArray(),
             await db.collection("contests").countDocuments(filter),
            ])
 
@@ -44,7 +44,7 @@ export const creatorservice ={
                 total,
                 page: parseInt(pagination?.page),
                 limit: parseInt(pagination?.limit),
-                totalPages: Math.ceil(total / pagination?.limit),
+                totalPages: Math.ceil(total / parseInt(pagination?.limit)),
             },
             }
         }catch(error){
@@ -52,12 +52,12 @@ export const creatorservice ={
         }
     },
 
-    async deleteContest(contest){
+    async deleteContest(id){
         try{
             const db= await mongo();
-            const result = await db.collection('contests').deleteOne({
-                _id:new ObjectId(contest._id)
-            },{projection:{imageUrl:1},returnDocument:'before'});
+            const result = await db.collection('contests').findOneAndDelete({
+                _id:new ObjectId(id)
+            },{projection:{imagePublicId:1},returnDocument:'before'});
             return result; 
         }catch(err){
             throw err;

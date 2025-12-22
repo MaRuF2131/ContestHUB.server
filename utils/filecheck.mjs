@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { uploadToCloudinary } from "../utils/CDN/cloudinaryUpload.mjs";
+import { uploadToCloudinary } from "./CDN/cloudinaryUpload.mjs";
 
 export const fileCheck = (folderName = "uploads") => {
   console.log("fileCheck middleware initialized for folder:", folderName);

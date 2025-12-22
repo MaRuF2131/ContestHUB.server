@@ -7,7 +7,7 @@ export const adminservice ={
         const db = await mongo();
         const result = await db.collection("user_roles").updateOne(
         { _id: new ObjectId(id) },
-        { $set: role }
+        { $set:{role: role} }
         );
 
         return result; // full updated contest data
@@ -20,7 +20,7 @@ export const adminservice ={
            const skip = (parseInt(pagination?.page) - 1) * parseInt(pagination?.limit);
            const db=await mongo();
            const [data,total]=await Promise.all([
-            await db.collection("user_roles").find(filter).skip(skip).limit(pagination?.limit).sort({createdAt:-1}).toArray(),
+            await db.collection("user_roles").find(filter).skip(skip).limit(parseInt(pagination?.limit)).sort({createdAt:-1}).toArray(),
             await db.collection("user_roles").countDocuments(filter),
            ])
 
@@ -31,10 +31,12 @@ export const adminservice ={
                 total,
                 page: parseInt(pagination?.page),
                 limit: parseInt(pagination?.limit),
-                totalPages: Math.ceil(total / pagination?.limit),
+                totalPages: Math.ceil(total / parseInt(pagination?.limit)),
             },
             }
         }catch(error){
+            console.log("rrrr");
+            
             throw error
         }
     },
@@ -43,7 +45,7 @@ export const adminservice ={
            const skip = (parseInt(pagination?.page) - 1) * parseInt(pagination?.limit);
            const db=await mongo();
            const [data,total]=await Promise.all([
-            await db.collection("contests").find(filter).skip(skip).limit(pagination?.limit).sort({createdAt:-1}).toArray(),
+            await db.collection("contests").find(filter).skip(skip).limit(parseInt(pagination?.limit)).sort({createdAt:-1}).toArray(),
             await db.collection("contests").countDocuments(filter),
            ])
 
@@ -54,7 +56,7 @@ export const adminservice ={
                 total,
                 page: parseInt(pagination?.page),
                 limit: parseInt(pagination?.limit),
-                totalPages: Math.ceil(total / pagination?.limit),
+                totalPages: Math.ceil(total / parseInt(pagination?.limit)),
             },
             }
         }catch(error){
@@ -67,7 +69,7 @@ export const adminservice ={
         const db = await mongo();
         const result = await db.collection("contests").updateOne(
         { _id: new ObjectId(id) },
-        { $set: status }
+        { $set:{ status:status} }
         );
 
         return result; // full updated contest data
@@ -75,6 +77,17 @@ export const adminservice ={
         throw err;
     }
     },
+ async deleteContest(id){
+        try{
+            const db= await mongo();
+            const result = await db.collection('contests').findOneAndDelete({
+                _id:new ObjectId(id)
+            },{projection:{imagePublicId:1},returnDocument:'before'});
+            return result; 
+        }catch(err){
+            throw err;
+        }    
+    }
 
 };
 

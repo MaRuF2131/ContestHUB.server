@@ -6,6 +6,7 @@ const rolecheck = async (req, res, next) => {
     const email = req?.user?.email;
 
     if (!email) {
+      console.log("err5");
       return res.status(401).json({ message: "Unauthorized: No email found in token" });
     }
 
@@ -14,7 +15,8 @@ const rolecheck = async (req, res, next) => {
     if (!result) {
       return res.status(404).json({ message: "No role found for this user" });
     }
-    if(result?.role===req?.user?.role){
+    if(result?.role!=req?.user?.role){
+      console.log("err6");
       return res.status(401).json({message:"Unauthorized:Reload or Loging again"})
     }
     req.role = result?.role;

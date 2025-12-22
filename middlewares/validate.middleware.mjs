@@ -25,7 +25,7 @@ export const validateRequest = (  rules={}) => {
         const result = await runValidations(rules, combinedData);
 
         if (!result.isValid) {
-            return res.status(422).json(result.errors);
+            return res.status(422).json({message:result.errors});
         }
 
         next();

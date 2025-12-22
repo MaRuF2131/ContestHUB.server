@@ -10,22 +10,25 @@ import {
 } from "./creator.rules.validation.mjs";
 import verifyJWT from "../../middlewares/auth.middleware.mjs";
 import rolecheck from "../../utils/Rolecheck.mjs";
+import { upload } from "../../utils/uploadConfig.mjs";
+import { fileCheck } from "../../utils/filecheck.mjs";
 
 const router = express.Router();
 //middleware to protect routes
 router.use(verifyJWT);
 router.use(rolecheck)
-router.use(async (req, res, next) => {
+router.use(async (req, res, next) => { 
   if (req.role !== 'creator') {
     return res.status(403).json({ message: 'Only creator can access this route' });
   }
   next();
 });
-
 // CREATE 
 router.post(
   "/create",
+  upload.single("image"),
   validateRequest(createContestRules),
+  fileCheck("contest"),
   creatorController.create
 );
 
