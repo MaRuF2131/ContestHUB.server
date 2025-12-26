@@ -7,6 +7,7 @@ import creator from './modules/creator/creator.route.mjs'
 import authin from './modules/auth/login.mjs'
 import authout from './modules/auth/logout.mjs'
 import  admin  from './modules/admin/admin.route.mjs';
+import payment from './modules/payment/payment.route.mjs'
 dotenv.config();
 const app = express();
 let db;
@@ -33,6 +34,7 @@ app.use('/authin',authin);
 app.use('/authot',authout);
 app.use('/creator',creator);
 app.use('/admin',admin);
+app.use(payment);
 
 
 
