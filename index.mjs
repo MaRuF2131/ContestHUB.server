@@ -19,9 +19,9 @@ let db;
     console.error(' MongoDB connection error:', err);
   }
 })();
-
+app.use("/api/payments",payment);
 app.use(cookieParser());
-app.use(cors({origin:['http://localhost:5173'],credentials:true ,allowedHeaders: ['Content-Type', 'Authorization', 'x-user','authorization']}));
+app.use(cors({origin:['http://localhost:5173'],credentials:true ,allowedHeaders: ['Content-Type', 'Authorization', 'x-user','authorization',"stripe-signature"]}));
 app.use(express.json());
 
 
@@ -34,7 +34,6 @@ app.use('/authin',authin);
 app.use('/authot',authout);
 app.use('/creator',creator);
 app.use('/admin',admin);
-app.use("/api/payments",payment);
 
 
 
