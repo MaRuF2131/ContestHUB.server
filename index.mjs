@@ -34,7 +34,7 @@ app.use('/authin',authin);
 app.use('/authot',authout);
 app.use('/creator',creator);
 app.use('/admin',admin);
-app.use(payment);
+app.use("/api/payments",payment);
 
 
 

@@ -6,9 +6,8 @@ import { createIntent } from "./payment.controller.mjs";
 
 const router = express.Router();
 //middleware to protect routes
-router.use(verifyJWT);
-router.use(rolecheck)
-const isAuth=(async (req, res, next) => { 
+const isAuth=(async (req, res,next) => { 
+  console.log("role",req.role);
   if (req.role !== 'user') {
     return res.status(403).json({ message: 'Only user can access this route' });
   }
@@ -16,11 +15,11 @@ const isAuth=(async (req, res, next) => {
 });
 
 // payment intent create
-router.post("/create-intent", isAuth, createIntent);
+router.post("/create-intent",verifyJWT,rolecheck,isAuth, createIntent);
 
 //payment webhook
 router.post(
-  "/api/payments/webhook",
+  "/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );

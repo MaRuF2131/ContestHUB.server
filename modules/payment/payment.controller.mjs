@@ -10,7 +10,7 @@ export const createIntent = async (req, res) => {
     const user = req.user;
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
+      amount: parseFloat(amount) * 100,
       currency: "usd",
       metadata: {
         userMail: user?.email,
@@ -25,9 +25,9 @@ export const createIntent = async (req, res) => {
       userMail: user?.email,
       userId:user?.uid,
       contestId,
-      amount,
+      amount: parseFloat(amount),
       currency: "usd",
-      paymentIntentId: paymentIntent.id,
+      paymentIntentId: paymentIntent?.id,
       status: "pending",
       createdAt: new Date(),
       updatedAt: new Date(),
