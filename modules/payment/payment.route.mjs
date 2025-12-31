@@ -23,6 +23,8 @@ router.use(cors({origin:['http://localhost:5173'],credentials:true ,allowedHeade
 router.use(express.json());
 //middleware to protect routes
 router.use(verifyJWT);
+router.get('/payment_status/:contestId',validateRequest(idParamRules),getStatus)
+
 router.use(rolecheck);
 router.use(async (req, res,next) => { 
   console.log("role",req.role);
@@ -34,7 +36,6 @@ router.use(async (req, res,next) => {
 
 // payment intent create
 router.post("/create-intent",validateRequest(idParamRules), createIntent);
-router.get('/payment_status',validateRequest(idParamRules),getStatus)
 
 
 export default router;

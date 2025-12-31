@@ -1,7 +1,6 @@
 // controllers/payment.controller.js
 import Stripe from "stripe";
-import mongo from "../../MongoDB.mjs";
-import { createPayment, getContest } from "./payment.service.mjs";
+import { createPayment, getContest,checkStatus } from "./payment.service.mjs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 
@@ -9,8 +8,17 @@ export const createIntent = async (req, res) => {
   try {
     const {contestId } = req.body;
     const user = req.user;
+    const rs=await checkStatus(contestId,user)
+    if(rs?.status==='pending'){
+      return res.status(401).json({ message:'Allready in pending' });
+     }
+     if(rs?.status==='succeeded'){
+      return res.status(401).json({ message:'Allready payment'});
+     }
+
     const result=await getContest(contestId);
-    if(result?.price) return res.status(401).json({message:"price is not define retry"});
+    if(user?.email===result?.creator) return res.status(401).json({message:"Creator can not join"});
+    if(!result?.price) return res.status(401).json({message:"price is not define retry"});
     const amount=result?.price;
     const paymentIntent = await stripe.paymentIntents.create({
       amount: parseFloat(amount) * 100,
@@ -18,13 +26,14 @@ export const createIntent = async (req, res) => {
       metadata: {
         userMail: user?.email,
         userId:user?.uid,
-        contestId,
+        contestId:contestId,
       },
     });
     
-    await createPayment(user,paymentIntent?.id,amount);
-    res.json({ clientSecret: paymentIntent.client_secret });
+    await createPayment(user,contestId,paymentIntent?.id,amount);
+    res.status(201).json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -33,14 +42,7 @@ export const getStatus=async(req,res)=>{
   try{
   const {contestId}=req.params;
   const user=req.user;
-  const db = await mongo();
-  const result=await db.collection("payments").findOne(
-    {    
-    userMail: user?.email,
-    userId:user?.uid,
-    contestId
-   }
-  )
+  const result=await checkStatus(contestId,user);
   if(result?.status==='pending'){
    return res.status(201).json({ status:'pending' });
   }

@@ -3,7 +3,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import mongo from './MongoDB.mjs';
-import creator from './modules/creator/creator.route.mjs' 
+import creator from './modules/creator/creator.route.mjs';
+import alluser from './modules/Alluser/Alluser.router.mjs'
 import authin from './modules/auth/login.mjs'
 import authout from './modules/auth/logout.mjs'
 import  admin  from './modules/admin/admin.route.mjs';
@@ -33,6 +34,7 @@ app.get('/',async (req ,res)=>{
 app.use('/authin',authin);
 app.use('/authot',authout);
 app.use('/creator',creator);
+app.use('/alluser',alluser);
 app.use('/admin',admin);
 
 

@@ -1,6 +1,21 @@
 import { ObjectId } from "mongodb";
 import mongo from "../../MongoDB.mjs";
 
+export const checkStatus=async(contestId,user)=>{
+    try{
+       const db=await mongo();
+       const result=await db.collection("payments").findOne(
+        {    
+        userMail: user?.email,
+        userId:user?.uid,
+        contestId
+       }
+      )
+     return result
+    }catch(error){
+        throw error
+    }
+};
 export const getContest=async(contestId)=>{
     try{
        const db=await mongo();
@@ -13,7 +28,7 @@ export const getContest=async(contestId)=>{
     }
 };
 
-export const createPayment=async(user,paymentIntentId,amount)=>{
+export const createPayment=async(user,contestId,paymentIntentId,amount)=>{
     try{
         const db=await mongo();
         await db.collection("payments").insertOne({

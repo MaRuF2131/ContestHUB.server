@@ -33,12 +33,14 @@ export const stripeWebhook = async (req, res) => {
           updatedAt: new Date(),
         },
       },
-      { returnDocument: "after" }
+      { projection:{contestId:1}, returnDocument: "after" }
     );
 
-    if (payment.value) {
+
+    console.log("payment",payment);
+    if (payment?.contestId) {
       await db.collection("contests").updateOne(
-        { _id: new ObjectId(payment.value.contestId) },
+        { _id: new ObjectId(payment?.contestId) },
         { $inc: { participants: 1 } }
       );
     }
