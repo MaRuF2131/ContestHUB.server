@@ -32,18 +32,33 @@ router.post(
   creatorController.create
 );
 
-// LIST ROOM + PAGINATION
+// LIST  + PAGINATION
 router.get(
   "/get",
   validateRequest(listContestRules),
   creatorController.list
 );
 
+// LIST  + PAGINATION
+router.get(
+  "/submissions",
+  validateRequest({...listContestRules, ...idParamRules}),
+  creatorController.submissionlist
+);
+
 // UPDATE 
-router.put(
+router.patch(
   "/:id",
+  upload.single("image"),
   validateRequest({ ...idParamRules, ...updateContestRules }),
+  fileCheck("contest"),
   creatorController.update
+);
+// UPDATE 
+router.patch(
+  "/setwinner/:id",
+  validateRequest(idParamRules),
+  creatorController.setwinner
 );
 
 // DELETE 

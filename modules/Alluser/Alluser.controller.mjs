@@ -22,7 +22,7 @@ export const AllUserController = {
         filter.type=type
       }
       if(tranding =='populer'){
-         srt={participants:-1,prizeMoney:-1}
+         srt={prizeMoney:-1,participants:-1,price:1}
       }
       if(tranding =='most prize'){
          srt={prizeMoney:-1}

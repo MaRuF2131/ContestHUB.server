@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongo from './MongoDB.mjs';
 import creator from './modules/creator/creator.route.mjs';
 import alluser from './modules/Alluser/Alluser.router.mjs'
+import user from './modules/user/user.route.mjs'
 import authin from './modules/auth/login.mjs'
 import authout from './modules/auth/logout.mjs'
 import  admin  from './modules/admin/admin.route.mjs';
@@ -35,6 +36,7 @@ app.use('/authin',authin);
 app.use('/authot',authout);
 app.use('/creator',creator);
 app.use('/alluser',alluser);
+app.use('/user',user)
 app.use('/admin',admin);
 
 

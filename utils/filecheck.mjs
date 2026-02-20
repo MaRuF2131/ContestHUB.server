@@ -6,6 +6,7 @@ export const fileCheck = (folderName = "uploads") => {
   return async (req, res, next) => {
     try {
       let imageData = null;
+      console.log("fileCheck: Received file:", req.file ? req.file.originalname : "No file uploaded");
       if (req.file) {
         if (!req.file.mimetype.startsWith("image/")) {
           return res.status(400).json({ error: "Only image files are allowed!" });

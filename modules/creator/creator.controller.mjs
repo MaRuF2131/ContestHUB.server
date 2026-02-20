@@ -1,3 +1,4 @@
+
 import { deleteFromCloudinary } from "../../utils/CDN/cloudinaryUpload.mjs";
 import { creatorservice } from "./creator.service.mjs";
 
@@ -21,7 +22,7 @@ export const creatorController = {
       type,
       description,
       taskInstruction,
-      deadline: new Date(deadline),
+      deadline: new Date(deadline).setHours(23,59,59,999),
       creator:req?.user?.username,
       creatorEmail:req?.user?.email,
       winnerID:"",
@@ -91,21 +92,111 @@ export const creatorController = {
     }
   },
 
+  // List / Paginated 
+  async submissionlist(req, res) {
+    try {
+      const {id, page, limit } = req.query;
+      const user=req?.user;
+      const contest = await creatorservice.getsubmission(
+        user,
+        id,
+       {
+        page,
+        limit
+       }
+      );
+
+      res.status(201).json(contest);
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: "Failed to fetch submissiions", error });
+    }
+  },
+
   // Update contest
   async update(req, res) {
     try {
+      let sign=false;
       const { id } = req.params ;
-      const info={price,prizeMoney,type,description,taskInstruction,deadline,name} = req.body;
-      const updated = await creatorservice.updateContest(id, info);
+
+      const {
+      price,
+      prizeMoney,
+      type,
+      description,
+      taskInstruction,
+      deadline,
+      name,
+    } = req.body;
+      const info = {
+      name,
+      price: Number(price),
+      prizeMoney: Number(prizeMoney),
+      type,
+      description,
+      taskInstruction,
+      deadline: new Date(deadline).setHours(23,59,59,999),
+    };
+      if (req.imageData && req.imageData.secure_url) {
+       sign=true;
+       info.imageUrl = req.imageData.secure_url;
+       info.imagePublicId = req.imageData.public_id;
+     }
+     console.log("info",info,"sign",sign);
+     
+      const updated = await creatorservice.updateContest(id, {...info}, sign);
+      console.log("update",updated);
+      
+      if(!updated.acknowledged){
+        return res.status(404).json({ message: "No contest found to update" });
+      }
+
+      if(updated?.imagePublicId){
+        try {
+          await deleteFromCloudinary(updated?.imagePublicId);
+          console.log(`🗑️ Cloudinary image deleted for product:`, updated?.imagePublicId);
+        } catch (cloudErr) {
+          console.error("⚠️ Cloudinary delete error:", cloudErr.message);
+        }
+      }
+
       res.status(201).json({
         success:true,
         data:updated,
         message: "Successfully update contest"
       });
     } catch (error) {
+      console.log(error);
+      
       res
         .status(500)
         .json({ message: "Failed to update contest", error });
+    }
+  },
+  // set winner
+  async setwinner(req, res) {
+    try {
+      const { id } = req.params ;
+      const {prizeMoney} = req.body;
+      if(!prizeMoney || prizeMoney===0 || !Number(prizeMoney)){
+        return res.status(400).json({ message: "prizeMoney is must number and required" });
+      }
+      const updated = await creatorservice.updatesubmission(id,prizeMoney);
+      if(updated.modifiedCount===0){
+        return res.status(404).json({ message: "No submission found to update winning status" });
+      }
+
+      res.status(201).json({
+        success:true,
+        data:updated,
+        message: "Successfully update winning status"
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Failed to update winning status", error });
     }
   },
 
